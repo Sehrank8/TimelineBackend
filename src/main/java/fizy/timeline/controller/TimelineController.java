@@ -5,7 +5,7 @@ import fizy.timeline.service.TimelineGenerationService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/wrapped")
+@RequestMapping("/api/timeline")
 public class TimelineController {
 
     public TimelineController(TimelineGenerationService generator) {
