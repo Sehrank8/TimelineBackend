@@ -19,9 +19,9 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        // Configure CORS with all origins and methods allowed
+        // Define CORS configuration
         CorsConfiguration corsConfig = new CorsConfiguration();
-        corsConfig.addAllowedOrigin("*"); // Allow all origins
+        corsConfig.addAllowedOriginPattern("*"); // Allow all origins using patterns
         corsConfig.addAllowedMethod(HttpMethod.GET); // Allow GET requests
         corsConfig.addAllowedMethod(HttpMethod.POST); // Allow POST requests
         corsConfig.addAllowedMethod(HttpMethod.PUT); // Allow PUT requests
