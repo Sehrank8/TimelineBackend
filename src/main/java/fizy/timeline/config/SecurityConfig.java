@@ -19,7 +19,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        // Define CORS configuration
+        // Configure CORS with all origins and methods allowed
         CorsConfiguration corsConfig = new CorsConfiguration();
         corsConfig.addAllowedOrigin("*"); // Allow all origins
         corsConfig.addAllowedMethod(HttpMethod.GET); // Allow GET requests
@@ -29,24 +29,20 @@ public class SecurityConfig {
         corsConfig.addAllowedHeader("*"); // Allow all headers
         corsConfig.setAllowCredentials(true); // Allow credentials (cookies, authorization headers, etc.)
 
-        // Register the CORS configuration
+        // Register the CORS configuration for all endpoints
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", corsConfig); // Apply CORS config to all endpoints
+        source.registerCorsConfiguration("/**", corsConfig); // Apply the configuration globally
 
+        // Configure Spring Security
         return http
-                .cors(cors -> cors.configurationSource(source)) // Apply CORS configuration globally
-                .csrf(csrf -> csrf.disable()) // Correct CSRF disable method
+                .cors(cors -> cors.configurationSource(source)) // Apply the CorsConfiguration
+                .csrf(csrf -> csrf.disable())  // Disable CSRF (common for APIs)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Allow OPTIONS preflight request
-                        .requestMatchers(
-                                "/",
-                                "/swagger-ui/**",
-                                "/v3/api-docs/**",
-                                "/api/timeline/auth/**"
-                        ).permitAll() // Allow public access to auth-related endpoints
-                        .anyRequest().authenticated() // All other endpoints require authentication
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()  // Allow OPTIONS preflight request
+                        .requestMatchers("/", "/swagger-ui/**", "/v3/api-docs/**", "/api/timeline/auth/**").permitAll()  // Public access to certain endpoints
+                        .anyRequest().authenticated()  // Protect other endpoints with authentication
                 )
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class) // JWT filter
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)  // JWT filter
                 .build();
     }
 }
